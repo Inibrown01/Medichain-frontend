@@ -1,3 +1,4 @@
+import { useEffect, useMemo, useState } from 'react'
 import { MapPin } from 'lucide-react'
 import { Container } from '../components/layout/Container'
 import { AnimatedCounter } from '../components/motion/AnimatedCounter'
@@ -5,39 +6,44 @@ import { ScrollReveal } from '../components/motion/ScrollReveal'
 import { Input } from '../components/ui/Input'
 import { ManufacturerCard } from '../components/manufacturers/ManufacturerCard'
 import { Link } from 'react-router-dom'
-
-const manufacturers = [
-  {
-    slug: 'emzor-pharmaceuticals',
-    name: 'Emzor Pharmaceuticals',
-    location: 'Lagos, Nigeria',
-    products: 142,
-    certifiedYear: 2018,
-  },
-  {
-    slug: 'swipha',
-    name: 'Swipha Nigeria',
-    location: 'Lagos, Nigeria',
-    products: 98,
-    certifiedYear: 2019,
-  },
-  {
-    slug: 'fidson',
-    name: 'Fidson Healthcare',
-    location: 'Lagos, Nigeria',
-    products: 76,
-    certifiedYear: 2017,
-  },
-  {
-    slug: 'may-baker',
-    name: 'May & Baker',
-    location: 'Ogun, Nigeria',
-    products: 54,
-    certifiedYear: 2016,
-  },
-] as const
+import { fetchRegistryManufacturers, type RegistryManufacturerRow } from '../lib/publicApi'
 
 export function ManufacturersPage() {
+  const [q, setQ] = useState('')
+  const [rows, setRows] = useState<RegistryManufacturerRow[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    let cancelled = false
+    ;(async () => {
+      setLoading(true)
+      setError(null)
+      try {
+        const data = await fetchRegistryManufacturers()
+        if (!cancelled) setRows(data)
+      } catch (e) {
+        if (!cancelled) {
+          setRows([])
+          setError(e instanceof Error ? e.message : 'Could not load manufacturers')
+        }
+      } finally {
+        if (!cancelled) setLoading(false)
+      }
+    })()
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
+  const filtered = useMemo(() => {
+    const qq = q.trim().toLowerCase()
+    if (!qq) return rows
+    return rows.filter((m) => m.name.toLowerCase().includes(qq))
+  }, [rows, q])
+
+  const totalProducts = rows.reduce((s, m) => s + (m.productCount || 0), 0)
+
   return (
     <>
       <ScrollReveal as="section" className="bg-brand-navy text-white" direction="none" scale>
@@ -50,36 +56,41 @@ export function ManufacturersPage() {
               Verified <em className="not-italic text-slate-200">manufacturers.</em>
             </h1>
             <p className="mt-4 max-w-xl text-slate-300">
-              Explore companies with active certifications, registered products, and transparent
-              facility intelligence.
+              Manufacturers are derived from registered products in the MediChain registry (live API data).
             </p>
           </div>
           <div className="rounded-3xl border border-white/20 bg-white/5 p-8 backdrop-blur-sm">
             <div className="grid grid-cols-2 gap-6">
               <div>
                 <p className="font-serif text-4xl font-semibold">
-                  <AnimatedCounter
-                    value={250}
-                    suffix="+"
-                    formatThousands={false}
-                    className="font-serif text-4xl font-semibold"
-                  />
+                  {loading ?
+                    <span className="text-slate-400">—</span>
+                  : <AnimatedCounter
+                      value={rows.length}
+                      suffix=""
+                      formatThousands={false}
+                      className="font-serif text-4xl font-semibold"
+                    />
+                  }
                 </p>
                 <p className="mt-1 text-xs font-semibold uppercase tracking-wide text-slate-400">
-                  Active manufacturers
+                  Manufacturers listed
                 </p>
               </div>
               <div>
                 <p className="font-serif text-4xl font-semibold">
-                  <AnimatedCounter
-                    value={15000}
-                    suffix="+"
-                    formatThousands
-                    className="font-serif text-4xl font-semibold"
-                  />
+                  {loading ?
+                    <span className="text-slate-400">—</span>
+                  : <AnimatedCounter
+                      value={totalProducts}
+                      suffix=""
+                      formatThousands
+                      className="font-serif text-4xl font-semibold"
+                    />
+                  }
                 </p>
                 <p className="mt-1 text-xs font-semibold uppercase tracking-wide text-slate-400">
-                  Registered products
+                  Registered product rows
                 </p>
               </div>
             </div>
@@ -92,26 +103,43 @@ export function ManufacturersPage() {
           <div className="flex flex-col gap-2 p-2 sm:flex-row sm:items-center">
             <Input
               className="h-14 flex-1 border-0 bg-slate-50"
-              placeholder="Search by manufacturer name, state, or certification..."
+              placeholder="Filter by manufacturer name…"
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
             />
             <button
               type="button"
               className="flex h-14 shrink-0 items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 text-sm font-semibold text-brand-secondary hover:bg-slate-50"
             >
               <MapPin className="h-4 w-4 text-brand-primary" />
-              Region
+              Registry
               <span className="text-slate-400">▾</span>
             </button>
           </div>
         </ScrollReveal>
 
-        <div className="mt-12 grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
-          {manufacturers.map((m, i) => (
-            <ScrollReveal key={m.slug} delay={i * 0.12} direction="up" scale>
-              <ManufacturerCard {...m} />
-            </ScrollReveal>
-          ))}
-        </div>
+        {error ?
+          <p className="mt-8 rounded-2xl border border-red-100 bg-red-50 px-4 py-6 text-center text-sm text-red-800">
+            {error}
+          </p>
+        : loading ?
+          <p className="mt-12 text-center text-sm text-brand-muted">Loading manufacturers…</p>
+        : filtered.length === 0 ?
+          <p className="mt-12 text-center text-sm text-brand-muted">No manufacturers in the registry yet.</p>
+        : <div className="mt-12 grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
+            {filtered.map((m, i) => (
+              <ScrollReveal key={m.slug} delay={i * 0.06} direction="up" scale>
+                <ManufacturerCard
+                  slug={m.slug}
+                  name={m.name}
+                  location="—"
+                  products={m.productCount}
+                  certifiedYear={null}
+                />
+              </ScrollReveal>
+            ))}
+          </div>
+        }
 
         <ScrollReveal
           as="section"
@@ -128,15 +156,15 @@ export function ManufacturersPage() {
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <Link
               to="/contact"
-              className="inline-flex h-12 min-w-[200px] items-center justify-center rounded-xl bg-brand-primary px-6 text-sm font-semibold text-white hover:bg-blue-700"
+              className="inline-flex h-12 items-center justify-center rounded-2xl bg-white px-8 text-sm font-bold text-brand-navy"
             >
-              Apply for certification
+              Contact us
             </Link>
             <Link
-              to="/contact"
-              className="inline-flex h-12 min-w-[200px] items-center justify-center rounded-xl border border-white/40 px-6 text-sm font-semibold text-white hover:bg-white/10"
+              to="/manufacturer/login"
+              className="inline-flex h-12 items-center justify-center rounded-2xl border border-white/30 px-8 text-sm font-bold text-white hover:bg-white/10"
             >
-              Inquiry support
+              Manufacturer login
             </Link>
           </div>
         </ScrollReveal>

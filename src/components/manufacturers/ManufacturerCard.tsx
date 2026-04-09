@@ -8,7 +8,8 @@ export type ManufacturerCardProps = {
   name: string
   location: string
   products: number
-  certifiedYear: number
+  /** When unknown (registry-only), pass null — shows an em dash */
+  certifiedYear: number | null
 }
 
 export function ManufacturerCard({
@@ -41,7 +42,7 @@ export function ManufacturerCard({
           </div>
           <div>
             <p className="text-xs font-semibold uppercase tracking-wide text-brand-muted">Certified</p>
-            <p className="text-lg font-bold text-brand-secondary">{certifiedYear}</p>
+            <p className="text-lg font-bold text-brand-secondary">{certifiedYear != null ? certifiedYear : '—'}</p>
           </div>
         </div>
       </div>

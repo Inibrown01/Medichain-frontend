@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import {
   ArrowLeft,
@@ -12,13 +13,86 @@ import { Container } from '../components/layout/Container'
 import { ScrollReveal } from '../components/motion/ScrollReveal'
 import { Button } from '../components/ui/Button'
 import { Card } from '../components/ui/Card'
+import { fetchVerifyDrug, type VerifyDrugResponse } from '../lib/publicApi'
 
-const HASH =
-  'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'
+function parseProductId(raw: string | undefined): number | null {
+  if (!raw) return null
+  const n = Number(raw)
+  if (!Number.isFinite(n) || n <= 0) return null
+  return n
+}
 
 export function VerifyPage() {
-  const { productId } = useParams()
-  const isSample = !productId || productId === 'amx-500'
+  const { productId: rawId } = useParams()
+  const idNum = parseProductId(rawId)
+  const [data, setData] = useState<VerifyDrugResponse | null>(null)
+  const [loading, setLoading] = useState(Boolean(idNum))
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (!idNum) {
+      setLoading(false)
+      setData(null)
+      setError(null)
+      return
+    }
+    let cancelled = false
+    ;(async () => {
+      setLoading(true)
+      setError(null)
+      try {
+        const d = await fetchVerifyDrug(idNum)
+        if (!cancelled) setData(d)
+      } catch (e) {
+        if (!cancelled) {
+          setData(null)
+          setError(e instanceof Error ? e.message : 'Verification failed')
+        }
+      } finally {
+        if (!cancelled) setLoading(false)
+      }
+    })()
+    return () => {
+      cancelled = true
+    }
+  }, [idNum])
+
+  const result = data?.verificationResult
+  const genuine = result === 'GENUINE'
+  const notReg = result === 'NOT_REGISTERED'
+
+  if (!idNum) {
+    return (
+      <Container className="py-20">
+        <p className="text-center text-lg font-semibold text-brand-secondary">Verify a product</p>
+        <p className="mt-2 text-center text-sm text-brand-muted">
+          Open a verification link with a product ID, e.g.{' '}
+          <Link className="font-semibold text-brand-primary" to="/verify/1">
+            /verify/1
+          </Link>
+          , or scan a QR code from packaging.
+        </p>
+      </Container>
+    )
+  }
+
+  if (loading) {
+    return (
+      <Container className="py-20">
+        <p className="text-center text-sm text-brand-muted">Checking registry…</p>
+      </Container>
+    )
+  }
+
+  if (error && !data) {
+    return (
+      <Container className="py-20">
+        <p className="text-center text-lg font-semibold text-red-700">Verification unavailable</p>
+        <p className="mt-2 text-center text-sm text-brand-muted">{error}</p>
+        <p className="mt-4 text-center text-xs text-brand-muted">Ensure `VITE_API_URL` points at your MediChain API.</p>
+      </Container>
+    )
+  }
 
   return (
     <>
@@ -60,19 +134,30 @@ export function VerifyPage() {
           </div>
 
           <div className="mt-8 flex flex-wrap items-center gap-3">
-            <span className="rounded-full bg-emerald-500 px-3 py-1 font-sans text-[0.75rem] font-bold uppercase tracking-[0.07em] text-white">
-              Authenticity confirmed
+            <span
+              className={`rounded-full px-3 py-1 font-sans text-[0.75rem] font-bold uppercase tracking-[0.07em] text-white ${
+                genuine ? 'bg-emerald-500' : notReg ? 'bg-slate-500' : 'bg-amber-500'
+              }`}
+            >
+              {genuine ? 'Authenticity confirmed' : notReg ? 'Not registered' : 'Flagged / review'}
             </span>
             <span className="hidden h-4 w-px bg-white/20 sm:block" aria-hidden />
-            <span className="font-sans text-sm font-medium text-slate-400">Batch verified</span>
+            <span className="font-sans text-sm font-medium text-slate-400">
+              {data?.batchNumber ? `Batch ${data.batchNumber}` : 'Registry'}
+            </span>
           </div>
 
-          <h1 className="mt-6 max-w-4xl">
-            <span className="mc-product-title-sans block sm:inline">Amoxicillin </span>
-            <span className="mc-product-title-serif">500mg</span>
+          <h1 className="mt-6 max-w-4xl font-serif text-4xl font-semibold tracking-tight md:text-5xl">
+            {data?.drugName || 'Product'}
           </h1>
           <p className="mt-4 font-serif text-lg italic text-white/90 md:text-xl">
-            Antibiotics — Distributed by <strong className="font-sans font-bold not-italic">Emzor Pharmaceuticals</strong>
+            {data?.manufacturer ? (
+              <>
+                Registry entry — <strong className="font-sans font-bold not-italic">{data.manufacturer}</strong>
+              </>
+            ) : (
+              'No manufacturer data on record.'
+            )}
           </p>
         </Container>
       </ScrollReveal>
@@ -81,57 +166,47 @@ export function VerifyPage() {
         <div className="grid gap-8 lg:grid-cols-3">
           <div className="space-y-8 lg:col-span-2">
             <ScrollReveal direction="up">
-            <Card padding="md" className="border-slate-100 shadow-lg">
-              <div className="grid gap-4 sm:grid-cols-2">
-                {[
-                  { icon: Building2, label: 'Manufacturer', value: 'Emzor Pharmaceuticals' },
-                  { icon: Hash, label: 'NAFDAC registration', value: 'A4-1234' },
-                  { icon: Hash, label: 'Batch number', value: 'EMZ-001' },
-                  { icon: Calendar, label: 'Expiry date', value: '2026-12-31' },
-                ].map((item) => (
-                  <div
-                    key={item.label}
-                    className="flex gap-3 rounded-2xl border border-slate-100 bg-slate-50/90 p-4"
-                  >
-                    <item.icon className="mt-0.5 h-5 w-5 shrink-0 text-brand-primary" />
-                    <div>
-                      <p className="mc-section-label">{item.label}</p>
-                      <p className="mt-1 font-sans text-lg font-semibold text-brand-secondary">{item.value}</p>
+              <Card padding="md" className="border-slate-100 shadow-lg">
+                <div className="grid gap-4 sm:grid-cols-2">
+                  {[
+                    { icon: Building2, label: 'Manufacturer', value: data?.manufacturer || '—' },
+                    { icon: Hash, label: 'NAFDAC registration', value: data?.nafDacNumber || '—' },
+                    { icon: Hash, label: 'Batch number', value: data?.batchNumber || '—' },
+                    { icon: Calendar, label: 'On-chain record', value: data?.createdAt ? new Date(data.createdAt * 1000).toLocaleDateString() : '—' },
+                  ].map((item) => (
+                    <div
+                      key={item.label}
+                      className="flex gap-3 rounded-2xl border border-slate-100 bg-slate-50/90 p-4"
+                    >
+                      <item.icon className="mt-0.5 h-5 w-5 shrink-0 text-brand-primary" />
+                      <div>
+                        <p className="mc-section-label">{item.label}</p>
+                        <p className="mt-1 font-sans text-lg font-semibold text-brand-secondary">{item.value}</p>
+                      </div>
                     </div>
-                  </div>
-                ))}
-              </div>
-            </Card>
+                  ))}
+                </div>
+              </Card>
             </ScrollReveal>
 
             <ScrollReveal direction="up" delay={0.12}>
-            <div>
-              <h2 className="mc-section-label">Product intelligence</h2>
-              <p className="mt-3 font-sans text-lg font-medium leading-7 text-brand-muted">
-                {isSample
-                  ? 'Broad-spectrum antibiotic used to treat various bacterial infections.'
-                  : 'Verified metadata for this product will appear here when available.'}
-              </p>
-            </div>
+              <div>
+                <h2 className="mc-section-label">Product intelligence</h2>
+                <p className="mt-3 font-sans text-lg font-medium leading-7 text-brand-muted">
+                  {data?.ipfsCid
+                    ? `Supporting documents may be referenced on IPFS (CID: ${data.ipfsCid.slice(0, 18)}…).`
+                    : 'No IPFS document CID linked for this on-chain record.'}
+                </p>
+              </div>
             </ScrollReveal>
 
             <ScrollReveal direction="up" delay={0.2}>
-            <div>
-              <h2 className="mc-section-label">Safety protocol</h2>
-              <ul className="mt-4 space-y-3">
-                {Array.from({ length: 4 }).map((_, i) => (
-                  <li
-                    key={i}
-                    className="flex items-start gap-3 rounded-2xl border border-slate-100 bg-white px-4 py-3 shadow-sm"
-                  >
-                    <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-slate-300" aria-hidden />
-                    <span className="font-sans text-sm font-medium text-brand-secondary">
-                      Keep out of reach of children
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </div>
+              <div>
+                <h2 className="mc-section-label">Safety protocol</h2>
+                <p className="mt-3 text-sm text-brand-muted">
+                  Always follow prescriber guidance. Report suspected falsified medicines to NAFDAC and through this platform.
+                </p>
+              </div>
             </ScrollReveal>
           </div>
 
@@ -146,22 +221,29 @@ export function VerifyPage() {
               />
               <div className="relative flex items-center gap-3">
                 <span className="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-500 text-white shadow-lg shadow-emerald-500/30">
-                  ✓
+                  {genuine ? '✓' : '!'}
                 </span>
-                <h3 className="font-sans text-2xl font-bold">Verified Safe</h3>
+                <h3 className="font-sans text-2xl font-bold">
+                  {genuine ? 'Verified' : notReg ? 'Not in registry' : 'Needs attention'}
+                </h3>
               </div>
               <p className="relative mt-4 font-sans text-sm leading-6 text-slate-300">
-                This product has been cross-referenced with the National Health Product Database and is
-                confirmed to be authentic.
+                {genuine
+                  ? 'This product ID matches a registered on-chain record.'
+                  : notReg
+                    ? 'This product ID is not in the MediChain registry.'
+                    : 'This record is flagged for regulatory review.'}
               </p>
-              <div className="relative mt-6">
-                <p className="mc-section-label text-slate-500">Verification hash</p>
-                <div className="mt-2 rounded-xl bg-black/40 p-3 font-mono text-xs leading-relaxed tracking-tight text-slate-200 ring-1 ring-white/10">
-                  {HASH}
+              {data?.ipfsCid ? (
+                <div className="relative mt-6">
+                  <p className="mc-section-label text-slate-500">IPFS CID</p>
+                  <div className="mt-2 rounded-xl bg-black/40 p-3 font-mono text-xs leading-relaxed tracking-tight text-slate-200 ring-1 ring-white/10">
+                    {data.ipfsCid}
+                  </div>
                 </div>
-              </div>
-              <Button className="relative mt-6 h-14 w-full text-base font-semibold" variant="success">
-                Digital certificate (PDF)
+              ) : null}
+              <Button className="relative mt-6 h-14 w-full text-base font-semibold" variant="success" disabled>
+                Digital certificate (when linked)
               </Button>
               <button
                 type="button"

@@ -1,0 +1,204 @@
+ Medichain NG
+Blockchain-Powered Drug & Medical Equipment
+Verification Platform for Nigeria
+
+Project Proposal & Budget Breakdown
+Prepared: 8th March 2026  |  Total Budget: $1,300  |  Timeline: 2–3 Weeks
+
+
+1. Executive Summary
+Medichain NG is a web-based platform designed to combat the alarming proliferation of counterfeit drugs and substandard medical equipment in Nigeria. The platform leverages blockchain technology — specifically an EVM-compatible chain with IPFS-based document storage — to create an immutable, transparent, and publicly queryable registry of verified pharmaceutical products and medical devices.
+
+This document outlines the complete scope of work, technical architecture, budget breakdown, payment schedule, and project timeline for the development of a fully mobile-responsive web platform with public-facing verification, manufacturer portals, and an admin dashboard.
+
+2. The Problem: Fake Drugs in Nigeria
+2.1 Scale of the Crisis
+Nigeria is one of the world's most severely affected countries when it comes to counterfeit pharmaceuticals. The problem spans drugs, medical devices, diagnostic tools, and surgical equipment — endangering millions of lives every year.
+
+Statistic	Detail	Source
+Counterfeit prevalence	Up to 16.7% of drugs in circulation are substandard/falsified	NAFDAC
+Annual deaths	Up to 500,000 deaths/year in Sub-Saharan Africa from bogus drugs	United Nations
+Import origin	Over 70% of drugs are imported; China & India are top sources of fakes	BusinessDay NG
+Economic loss	$12M–$44.7M/year in malaria treatment wasted on fake medicines	WHO
+Market ranking	Nigeria labelled the most counterfeit market in the developing world	Bloomberg 2023
+Hospital impact	1,000+ patients/year hospitalized for adverse reactions from fake drugs	OCCRP
+
+2.2 Referenced News Articles & Sources
+The following articles document the scale of the fake drugs crisis in Nigeria and provide context for why a blockchain verification platform is urgently needed:
+
+• Nigeria's Counterfeit Drug Epidemic (Think Global Health, 2024): https://www.thinkglobalhealth.org/article/nigerias-counterfeit-drug-epidemic
+• Fake Products Overrun Regulators, Endanger Nigerians (BusinessDay NG, March 2024): https://businessday.ng/news/article/fake-drugs-overrun-regulators-endangers-nigerians/
+• Fake Drugs Proliferate Amid Lack of Regulations (Africa Defense Forum, Sept 2024): https://adf-magazine.com/2024/09/fake-drugs-proliferate-amid-lack-of-regulations/
+• NAFDAC Unveils Tools to Tackle Fake Drugs in Nigeria (Punch, June 2026): https://punchng.com/nafdac-unveils-tools-to-tackle-fake-drugs/
+• Customs Seizes Fake Drugs Worth ₦921m (PRNigeria, May 2026): https://prnigeria.com/2026/05/02/customs-seizes-fake-drugs/
+• NAFDAC Public Alert: Falsified Oxytocin Injection in Nigeria (NAFDAC, 2024): https://nafdac.gov.ng/public-alert-no-06-2024-alert-on-sale-of-falsified-and-unregistered-oxytocin-injection-in-nigeria/
+• Influx of Fake Drugs to Nigeria Worries Health Experts (PMC / BMJ): https://pmc.ncbi.nlm.nih.gov/articles/PMC1122639/
+• Vanguard: NAFDAC Engages Stakeholders on Substandard Medicines (Feb 2024): https://www.vanguardngr.com/2024/02/no-proliferation-of-fake-drugs-in-nigeria-nafdac-insists/
+
+
+
+3. Proposed Solution: Medichain NG
+3.1 How It Works
+Medichain NG creates a tamper-proof, blockchain-anchored registry of approved pharmaceutical products and medical equipment in Nigeria. Each verified product receives a unique on-chain identifier that consumers, pharmacists, healthcare workers, and regulators can query in real time.
+
+Step	Actor	Action
+1	Manufacturer / Importer	Submits product documentation, batch records, and certificates
+2	Admin / Regulator	Reviews submission, approves or rejects via dashboard
+3	Smart Contract	Mints a unique product record on the EVM blockchain; documents stored on IPFS
+4	QR Code / Serial	Generated and provided to the manufacturer for product labeling
+5	Consumer / Pharmacist	Scans QR code or enters serial number on the web platform to verify authenticity
+6	Platform	Returns real-time verification result: GENUINE / FLAGGED / NOT REGISTERED
+
+3.2 Blockchain & Storage Architecture
+•EVM-Compatible Chain: Polygon (recommended for low gas fees) or BNB Smart Chain
+•Smart Contracts: Written in Solidity — product registry, ownership, batch verification
+•IPFS Storage: Product documents, certificates, and images stored on IPFS via Pinata or Web3.Storage
+•On-chain: Product ID, NAFDAC registration number, manufacturer hash, status (approved/recalled)
+•Off-chain (IPFS): Certificates, lab reports, product images, full metadata — linked by CID hash
+•Wallet integration: MetaMask / WalletConnect for admin signing; users interact without a wallet
+
+3.3 Platform Features
+Public-Facing Features
+•Homepage with product search bar (by name, batch number, NAFDAC reg. number, or QR scan)
+•Real-time verification result page: product details, manufacturer, approval status, recall alerts
+•Mobile-responsive design — works on all screen sizes including low-end Android phones
+•Report suspicious product form — submit reports with photo upload
+•Publicly viewable product registry with pagination and filters
+•NAFDAC recall alerts and public notices section
+
+Manufacturer / Importer Portal
+•Secure login — register as a manufacturer or authorized distributor
+•Submit new products for verification (form + document upload to IPFS)
+•Track submission status (Pending / Under Review / Approved / Rejected)
+•View all registered products and batch records
+•Download QR codes and verification labels for approved products
+
+Admin Dashboard
+•Secure admin login with role-based access (Super Admin, Reviewer, Read-only)
+•Review and approve/reject product submissions with notes
+•Issue product recalls — instantly updates on-chain status
+•Manage manufacturers and distributors (KYC, license verification)
+•Analytics dashboard: total products verified, search queries, reports filed
+•Export reports as CSV / PDF
+•System settings: manage categories, product types, regulatory standards
+•Audit trail — all admin actions logged immutably on-chain
+
+
+
+4. Full Scope of Work
+#	Deliverable	Description
+1	UI/UX Design	Figma wireframes & hi-fi designs: public portal, manufacturer portal, admin dashboard — mobile-first
+2	Frontend Development	React.js — fully responsive web app, public pages, manufacturer portal, admin dashboard
+3	Backend / API	Node.js/Express REST API, authentication (JWT), product management, file handling
+4	Smart Contracts	Solidity contracts for product registry, batch management, recall system on EVM chain
+5	Blockchain Integration	Ethers.js frontend integration, contract deployment, transaction management
+6	IPFS Integration	File upload to IPFS (Pinata), CID storage and retrieval, document viewer
+7	Database	PostgreSQL for off-chain app data: users, submissions, search logs, reports
+8	QR Code System	QR generation for approved products, scan-to-verify on mobile browsers
+9	Admin Dashboard	Full-featured dashboard: approvals, recalls, analytics, user management, audit logs
+10	Search & Verification	Fast product lookup by name, NAFDAC no., batch no., serial, QR code
+11	Reporting System	Public report submission, admin review queue, status tracking
+12	Deployment	Cloud deployment (Railway/Render + Vercel), domain setup, SSL, testnet + mainnet deploy
+13	Testing & QA	Unit tests, end-to-end testing, mobile responsiveness checks, smart contract audits
+14	Documentation	Technical docs, API documentation, admin user guide
+
+
+
+5. Budget Breakdown
+Total project budget: $1,300 USD. All costs include development, design, infrastructure setup, and initial deployment. Recurring hosting and blockchain gas costs post-launch are not included.
+
+Category	Item	Cost (USD)
+UI/UX Design	Figma wireframes, hi-fidelity mockups, component library, mobile-first design (all 3 portals)	$150
+Frontend Development	React.js app — public portal, manufacturer portal, admin dashboard, QR scanner	$300
+Backend Development	Node.js API, authentication, PostgreSQL database, business logic, file management	$200
+Blockchain & Smart Contracts	Solidity contracts (registry, recalls), deployment to EVM testnet + mainnet, Ethers.js integration	$200
+IPFS Integration	Pinata/Web3.Storage setup, upload/retrieval APIs, document viewer	$80
+QR Code System	QR generation, scan-to-verify feature, label export	$50
+Admin Dashboard	Analytics widgets, approval workflows, audit logs, export features	$120
+DevOps & Deployment	Cloud hosting setup (Vercel + Railway), SSL, CI/CD, domain config, env management	$80
+Testing & QA	Unit tests, integration tests, mobile QA, smart contract testing	$70
+Documentation	Technical docs, admin user guide, API reference	$50
+TOTAL		$1,300
+
+Note: Budget assumes open-source tooling. Blockchain gas fees for contract deployment on Polygon mainnet are estimated at under $5 and are included. Domain nae is also included. Any NAFDAC API integration fees, domain registration, or third-party KYC service costs are outside this scope.
+
+6. Payment Schedule
+Payments are split into three milestones to align with project progress and give both parties clear checkpoints.
+
+Payment	Amount	% of Total	Due Date / Trigger	Milestone Unlocked
+Payment 1 — Kickoff	$520	40%	Before work begins	Project start, UI/UX design, architecture setup
+Payment 2 — Midpoint	$390	30%	After frontend + smart contracts delivered for review	Frontend app, smart contracts deployed to testnet
+Payment 3 — Final	$390	30%	Upon final delivery & deployment	Full platform live, admin dashboard, documentation
+
+All payments to be made in USD via bank transfer, USDT, or agreed payment method. Work on each phase begins only after the corresponding payment is confirmed.
+
+
+
+7. Project Timeline
+Estimated total: 2–3 weeks from kickoff. The timeline below assumes prompt feedback and review turnaround from the client within 24 hours of each submission.
+
+Phase	Days	Deliverables
+Phase 1: Design & Architecture	Days 1–3	UI/UX designs (Figma), database schema, smart contract design, project setup
+Phase 2: Smart Contracts & Backend	Days 4–7	Solidity contracts deployed to testnet, Node.js API, PostgreSQL setup, IPFS integration
+Phase 3: Frontend Development	Days 8–13	Public portal, manufacturer portal, admin dashboard, QR system — all responsive
+Phase 4: Integration & Testing	Days 14–17	Frontend ↔ Backend ↔ Blockchain integration, QA, bug fixes, mobile testing
+Phase 5: Deployment & Handover	Days 18–21	Mainnet deployment, cloud hosting, domain, final docs, walkthrough & handover
+
+Milestones for payment triggers align with Phase completions: Payment 1 at kickoff, Payment 2 after Phase 3 sign-off, Payment 3 after Phase 5 final delivery.
+
+8. Technology Stack
+
+Layer	Technology	Purpose
+Frontend	React.js + Tailwind CSS	Responsive web app — public, manufacturer, admin portals
+Backend	Node.js + Express.js	REST API, business logic, authentication
+Database	PostgreSQL	Off-chain data: users, submissions, logs, reports
+Blockchain	Polygon (EVM) / Solidity	Immutable product registry, recall management, audit trail
+Storage	IPFS via Pinata	Decentralized document & image storage
+Blockchain Library	Ethers.js	Frontend-to-smart-contract interaction
+Authentication	JWT + bcrypt	Secure login for manufacturers and admins
+QR Codes	qrcode.js	Generate scannable product verification codes
+Hosting	Vercel (frontend) + Railway (backend)	Scalable cloud deployment
+Deployment	Hardhat + Polygon Mumbai testnet → Mainnet	Smart contract testing and deployment
+
+
+
+9. Why Blockchain for Drug Verification?
+Traditional centralized databases are vulnerable to manipulation, data corruption, and single points of failure. Using an EVM blockchain provides:
+
+•Immutability: Once a product record is written on-chain, it cannot be altered or deleted — preventing fraud
+•Transparency: Anyone can independently verify a product's registration status without trusting a central authority
+•Decentralization: The registry does not depend on any single server; it lives on the blockchain network
+•Auditability: Every approval, recall, and status change is recorded with a timestamp and signer address
+•Interoperability: Other applications, labs, or regulators can read the registry via standard smart contract calls
+•IPFS for documents: Documents are content-addressed — the hash proves the document hasn't been tampered with
+
+This makes Medichain NG fundamentally more trustworthy than existing NAFDAC web portals, which are centralized and prone to downtime, data gaps, and manipulation.
+
+10. Post-Launch Considerations (Out of Scope)
+The following are not included in this budget but are recommended for consideration after launch:
+
+•Monthly hosting: ~$20–$40/month (Vercel + Railway)
+•Blockchain gas fees: ~$5–$20/month depending on transaction volume on Polygon
+•IPFS pinning: Free tier available; paid plans from ~$10/month for higher storage
+•NAFDAC API / data partnership: Official integration with NAFDAC database (requires regulatory engagement)
+•Mobile app (Android/iOS): Future Phase 2 — native app with camera QR scanning (~$800–$2,000)
+•SMS verification service: USSD/SMS fallback for feature phones (~$30–$80/month)
+•Security audit: Professional smart contract audit (~$500–$2,000)
+
+11. Terms & Conditions
+•All source code developed under this contract is owned by the client upon full payment
+•Developer retains the right to list the project in a portfolio (without exposing proprietary data)
+•Scope changes after Phase 2 begins may require additional budget negotiation
+•Client is responsible for providing product content, logos, and regulatory information for seeding
+•A 14-day bug-fix warranty is included after final delivery at no additional cost
+•This proposal is valid for 30 days from the date of issue
+
+12. Contact & Next Steps
+To proceed with Medichain NG:
+
+1.Review and sign this proposal
+2.Submit Payment 1 ($520) to confirm project kickoff
+3.Kick-off call to align on design preferences, product categories, and regulatory requirements
+4.Development begins within 24 hours of payment confirmation
+
+Medichain NG — Protecting Nigerian Lives Through Verified Medicine
