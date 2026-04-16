@@ -10,7 +10,10 @@ export const contractAddress = (import.meta.env.VITE_CONTRACT_ADDRESS as string 
 
 export const rpcUrl = (import.meta.env.VITE_RPC_URL as string | undefined) || ''
 
-export const apiBaseUrl = (import.meta.env.VITE_API_URL as string | undefined)?.replace(/\/$/, '') || ''
+/** MediChain REST API (must include `/api/v1`). Matches admin portal default when env is unset. */
+const DEFAULT_API_BASE = 'http://localhost:4000/api/v1'
+export const apiBaseUrl =
+  (import.meta.env.VITE_API_URL as string | undefined)?.trim().replace(/\/$/, '') || DEFAULT_API_BASE
 
 /** Human-readable names for env docs */
 export const supportedChainsHelp =

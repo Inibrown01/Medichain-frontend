@@ -1,3 +1,5 @@
+import { apiBaseUrl } from './chainConfig'
+
 export const ADMIN_JWT_KEY = 'medichain_admin_jwt'
 export const ADMIN_PROFILE_KEY = 'medichain_admin_profile'
 export const ADMIN_REFRESH_KEY = 'medichain_admin_refresh'
@@ -10,8 +12,7 @@ export type AdminSessionOptions = {
 }
 
 export function getApiBase(): string {
-  const raw = import.meta.env.VITE_API_URL as string | undefined
-  return raw?.replace(/\/$/, '') || 'http://localhost:4000/api/v1'
+  return apiBaseUrl
 }
 
 function getSessionStorage(): Storage | null {

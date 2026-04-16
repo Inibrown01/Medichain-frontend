@@ -16,8 +16,7 @@ export async function uploadSensitiveToIpfs(file: File): Promise<{
   ipfsUri: string
   gatewayUrl: string
 }> {
-  const base = apiBaseUrl || ''
-  if (!base) throw new Error('VITE_API_URL is not set')
+  const base = apiBaseUrl
   const token = getToken()
   if (!token) throw new Error('Not authenticated')
 
@@ -38,8 +37,7 @@ export async function uploadSensitiveToIpfs(file: File): Promise<{
 
 /** Public image to Cloudinary (no auth). */
 export async function uploadPublicImage(file: File, folder?: string): Promise<{ url: string; publicId: string }> {
-  const base = apiBaseUrl || ''
-  if (!base) throw new Error('VITE_API_URL is not set')
+  const base = apiBaseUrl
 
   const fd = new FormData()
   fd.append('file', file)

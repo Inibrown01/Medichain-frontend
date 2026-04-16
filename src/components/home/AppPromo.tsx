@@ -2,6 +2,7 @@ import { motion } from 'framer-motion'
 import { Container } from '../layout/Container'
 import { ScrollReveal } from '../motion/ScrollReveal'
 import { easeMotion } from '../../lib/motion'
+import comingSoonPhone from '../../assets/medichain/coming-soon-phone.png'
 
 export function AppPromo() {
   return (
@@ -66,15 +67,18 @@ export function AppPromo() {
               transition={{ duration: 1.05, ease: easeMotion }}
             >
               <motion.div
-                className="relative w-[min(100%,280px)]"
+                className="relative w-[min(100%,320px)]"
                 animate={{ y: [0, -8, 0] }}
                 transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
               >
-                <div className="aspect-[9/19] w-full rounded-[2.5rem] border-4 border-slate-700 bg-slate-900 shadow-2xl">
-                  <div className="flex h-full flex-col items-center justify-center p-4 text-center text-xs text-slate-500">
-                    Phone mockup — add screenshot
-                  </div>
-                </div>
+                <img
+                  src={comingSoonPhone}
+                  alt="MediChain NG mobile app on a smartphone"
+                  className="h-auto w-full drop-shadow-2xl"
+                  width={640}
+                  height={1200}
+                  loading="lazy"
+                />
               </motion.div>
             </motion.div>
           </div>

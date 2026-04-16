@@ -30,12 +30,10 @@ const emptyWeek: VerificationDayPoint[] = [
 ]
 
 function dashboardAnalyticsUrl(companyName: string | undefined) {
-  const base = apiBaseUrl || ''
-  if (!base) return ''
   const qs = new URLSearchParams()
   if (companyName?.trim()) qs.set('manufacturer', companyName.trim())
   const q = qs.toString()
-  return `${base}/analytics/dashboard${q ? `?${q}` : ''}`
+  return `${apiBaseUrl}/analytics/dashboard${q ? `?${q}` : ''}`
 }
 
 function ActivityIcon({ kind }: { kind: string }) {
@@ -128,10 +126,6 @@ export function DashboardHomePage() {
   useEffect(() => {
     const name = summary?.companyName || profile?.companyName
     const url = dashboardAnalyticsUrl(name)
-    if (!url) {
-      setAnalyticsError('VITE_API_URL is not set')
-      return
-    }
     let cancelled = false
     ;(async () => {
       setAnalyticsError(null)

@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
-import { Shield } from 'lucide-react'
 import { cn } from '../../lib/cn'
+import logoMark from '../../assets/medichain/logo.png'
 
 export type LogoProps = {
   className?: string
@@ -11,15 +11,15 @@ export type LogoProps = {
 
 export function Logo({ className, to = '/', compact = false, onNavigate }: LogoProps) {
   const content = (
-    <span className={cn('inline-flex items-center gap-2', className)}>
-      <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-primary/10 text-brand-primary">
-        <Shield className="h-5 w-5" aria-hidden />
-      </span>
-      {!compact && (
-        <span className="font-semibold tracking-tight text-brand-secondary">
-          MediChain<span className="text-brand-primary">NG</span>
-        </span>
-      )}
+    <span className={cn('inline-flex items-center', className)}>
+      <img
+        src={logoMark}
+        alt="MediChain NG"
+        width={260}
+        height={52}
+        className={cn('h-11 w-auto object-contain object-left sm:h-12', compact && 'h-9 sm:h-9')}
+        decoding="async"
+      />
     </span>
   )
 

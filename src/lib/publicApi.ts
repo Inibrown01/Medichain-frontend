@@ -1,9 +1,7 @@
 import { apiBaseUrl } from './chainConfig'
 
 function base() {
-  const b = apiBaseUrl || ''
-  if (!b) throw new Error('VITE_API_URL is not set')
-  return b
+  return apiBaseUrl
 }
 
 export type RegistryProductRow = {

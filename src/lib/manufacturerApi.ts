@@ -30,15 +30,8 @@ export function getManufacturerProfile(): ManufacturerProfile | null {
   }
 }
 
-function assertBase() {
-  const base = apiBaseUrl || ''
-  if (!base) throw new Error('VITE_API_URL is not set')
-  return base
-}
-
 export async function manufacturerLogin(email: string, password: string) {
-  const base = assertBase()
-  const res = await fetch(`${base}/auth/manufacturer/login`, {
+  const res = await fetch(`${apiBaseUrl}/auth/manufacturer/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email, password }),
@@ -51,8 +44,7 @@ export async function manufacturerLogin(email: string, password: string) {
 }
 
 export async function manufacturerRegister(body: { email: string; password: string; companyName: string }) {
-  const base = assertBase()
-  const res = await fetch(`${base}/auth/manufacturer/register`, {
+  const res = await fetch(`${apiBaseUrl}/auth/manufacturer/register`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
@@ -64,7 +56,6 @@ export async function manufacturerRegister(body: { email: string; password: stri
 }
 
 export async function manufacturerFetch(path: string, init?: RequestInit) {
-  const base = assertBase()
   const token = getManufacturerToken()
   if (!token) throw new Error('Not authenticated')
   const headers = new Headers(init?.headers)
@@ -73,7 +64,7 @@ export async function manufacturerFetch(path: string, init?: RequestInit) {
     headers.set('Content-Type', 'application/json')
   }
   const p = path.startsWith('/') ? path : `/${path}`
-  return fetch(`${base}${p}`, { ...init, headers })
+  return fetch(`${apiBaseUrl}${p}`, { ...init, headers })
 }
 
 export type ProductApplicationDoc = {

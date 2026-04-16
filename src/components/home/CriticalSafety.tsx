@@ -4,6 +4,7 @@ import { Container } from '../layout/Container'
 import { Card } from '../ui/Card'
 import { ScrollReveal } from '../motion/ScrollReveal'
 import { easeMotion } from '../../lib/motion'
+import safetyRight from '../../assets/medichain/safety-right.png'
 
 const points = [
   {
@@ -81,7 +82,14 @@ export function CriticalSafety() {
               aria-hidden
             />
             <div className="relative overflow-hidden rounded-[2rem] bg-slate-200 shadow-lg ring-1 ring-slate-200/80">
-              <div className="aspect-[5/4] w-full bg-gradient-to-br from-slate-100 to-slate-300" />
+              <img
+                src={safetyRight}
+                alt="Assorted verified medicine tablets and capsules"
+                className="aspect-[5/4] w-full object-cover object-center"
+                width={800}
+                height={640}
+                loading="lazy"
+              />
               <Card className="absolute bottom-5 left-5 max-w-[260px] border-0 p-4 shadow-xl" padding="none">
                 <motion.div
                   className="flex items-start gap-3"

@@ -3,6 +3,8 @@ import { QrCode, Search } from 'lucide-react'
 import { motion, useReducedMotion } from 'framer-motion'
 import { Container } from '../layout/Container'
 import { easeMotion } from '../../lib/motion'
+import heroImage from '../../assets/medichain/hero-image.png'
+import heroRightBg from '../../assets/medichain/hero-right-bg.png'
 
 const stagger = {
   hidden: { opacity: 0 },
@@ -109,17 +111,34 @@ export function HomeHero() {
             animate={reduce ? undefined : { opacity: 1, x: 0, scale: 1 }}
             transition={{ duration: 1.05, delay: 0.18, ease: easeMotion }}
           >
-            <motion.div
-              className="absolute -bottom-6 -left-6 right-12 top-12 rounded-[2.5rem] bg-sky-100/80 blur-sm"
+            <img
+              src={heroRightBg}
+              alt=""
+              className="pointer-events-none absolute -bottom-6 -left-6 right-12 top-12 h-[min(90%,520px)] w-[min(100%,520px)] max-w-none rounded-[2.5rem] object-cover opacity-90"
               aria-hidden
-              animate={reduce ? undefined : { opacity: [0.6, 1, 0.6] }}
-              transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
             />
+            {!reduce ? (
+              <motion.div
+                className="pointer-events-none absolute -bottom-6 -left-6 right-12 top-12 rounded-[2.5rem] bg-sky-100/50 blur-sm"
+                aria-hidden
+                animate={{ opacity: [0.5, 0.85, 0.5] }}
+                transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+              />
+            ) : (
+              <div
+                className="pointer-events-none absolute -bottom-6 -left-6 right-12 top-12 rounded-[2.5rem] bg-sky-100/40 blur-sm"
+                aria-hidden
+              />
+            )}
             <div className="relative aspect-[4/5] w-full overflow-hidden rounded-[2rem] bg-slate-200 shadow-xl ring-1 ring-slate-200/60">
-              <div className="flex h-full w-full flex-col items-center justify-center bg-gradient-to-b from-slate-100 to-slate-200 p-8 text-center text-slate-500">
-                <p className="text-sm font-semibold">Hero image</p>
-                <p className="mt-2 text-xs">Replace with your asset</p>
-              </div>
+              <img
+                src={heroImage}
+                alt="Verified medicines and health products"
+                className="h-full w-full object-cover object-center"
+                width={640}
+                height={800}
+                fetchPriority="high"
+              />
               <motion.div
                 className="absolute bottom-4 right-4 max-w-[220px] rounded-2xl border border-white/60 bg-white/95 p-3 shadow-lg backdrop-blur-sm"
                 initial={reduce ? false : { opacity: 0, y: 16 }}

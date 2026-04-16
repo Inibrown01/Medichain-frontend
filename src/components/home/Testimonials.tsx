@@ -3,6 +3,9 @@ import { Container } from '../layout/Container'
 import { ShieldCheck } from 'lucide-react'
 import { ScrollReveal } from '../motion/ScrollReveal'
 import { easeMotion } from '../../lib/motion'
+import testimonial1 from '../../assets/medichain/testimonial-1.png'
+import testimonial2 from '../../assets/medichain/testimonial-2.png'
+import testimonial3 from '../../assets/medichain/testimonial-3.png'
 
 const items = [
   {
@@ -10,21 +13,24 @@ const items = [
       'MediChain NG has revolutionized how we verify our supplies. It gives us and our patients absolute peace of mind.',
     name: 'Dr. Madeleine Nkiru',
     role: 'Chief pharmacist, LGH',
-    initials: 'MN',
+    avatar: testimonial1,
+    avatarAlt: 'Dr. Madeleine Nkiru',
   },
   {
     quote:
       'The QR scanning feature is incredibly fast. I use it for every new batch. A vital tool for all health workers.',
     name: 'Pharm. Mathew Kemsguy',
     role: 'Community pharmacist',
-    initials: 'MK',
+    avatar: testimonial2,
+    avatarAlt: 'Pharm. Mathew Kemsguy',
   },
   {
     quote:
-      'I never buy my medication without checking it here first. It’s simple, fast, and makes me feel safe.',
+      "I never buy my medication without checking it here first. It's simple, fast, and makes me feel safe.",
     name: 'Mrs. Elumelu',
     role: 'Patient',
-    initials: 'E',
+    avatar: testimonial3,
+    avatarAlt: 'Mrs. Elumelu',
   },
 ] as const
 
@@ -58,9 +64,14 @@ export function Testimonials() {
               <blockquote className="mc-quote mt-4 flex-1">&ldquo;{t.quote}&rdquo;</blockquote>
               <div className="mt-6 border-t border-slate-100 pt-6">
                 <div className="flex items-center gap-3">
-                  <span className="flex h-11 w-11 items-center justify-center rounded-full bg-slate-100 text-sm font-bold text-brand-secondary">
-                    {t.initials}
-                  </span>
+                  <img
+                    src={t.avatar}
+                    alt={t.avatarAlt}
+                    className="h-11 w-11 shrink-0 rounded-full object-cover ring-2 ring-slate-100"
+                    width={44}
+                    height={44}
+                    loading="lazy"
+                  />
                   <div className="text-left">
                     <figcaption className="font-semibold text-brand-secondary">{t.name}</figcaption>
                     <p className="text-xs font-semibold uppercase tracking-wide text-brand-muted">{t.role}</p>
