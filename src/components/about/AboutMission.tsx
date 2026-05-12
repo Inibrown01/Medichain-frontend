@@ -1,5 +1,5 @@
+import { Activity, Shield } from 'lucide-react'
 import { Container } from '../layout/Container'
-import { Shield, Zap } from 'lucide-react'
 import { ScrollReveal } from '../motion/ScrollReveal'
 
 const stats = [
@@ -11,49 +11,79 @@ const stats = [
 
 export function AboutMission() {
   return (
-    <ScrollReveal as="section" className="bg-white py-20 md:py-28" direction="up">
+    <ScrollReveal as="section" className="bg-[#F9FAFB] py-20 md:py-28" direction="up">
       <Container>
-        <div className="grid gap-14 lg:grid-cols-2 lg:gap-20">
-          <div>
-            <span className="mc-eyebrow--blue">Our mission</span>
-            <h2 className="mt-4 font-sans text-3xl font-bold leading-tight text-brand-secondary md:text-4xl">
-              A Vision for <span className="font-serif italic text-brand-primary">Absolute Certainty.</span>
+        <div className="grid gap-14 lg:grid-cols-2 lg:items-start lg:gap-20 xl:gap-24">
+          <div className="max-w-xl">
+            <span className="inline-flex rounded-full bg-[#EEF2FF] px-3 py-1 font-sans text-xs font-bold uppercase tracking-[0.12em] text-[#4338CA]">
+              Our mission
+            </span>
+            <h2 className="mt-5 font-sans text-[clamp(2rem,3vw+1rem,3.25rem)] font-bold leading-[1.1] tracking-tight text-[#111827]">
+              A Vision for{' '}
+              <span className="font-serif italic text-[#111827]">Absolute Certainty.</span>
             </h2>
-            <blockquote className="mt-6 border-l-4 border-brand-primary/30 pl-6 font-serif text-lg italic leading-relaxed text-brand-muted">
-              Every dose should be traceable, every label truthful, and every patient protected by data they
-              can trust.
-            </blockquote>
-            <div className="mt-10 grid grid-cols-2 gap-6">
+            <p className="mt-6 font-serif text-lg italic leading-relaxed text-[#6B7280] md:text-xl">
+              We believe that every citizen deserves absolute certainty when it comes to their health. Our
+              mission is to provide that certainty through a transparent, accessible, and unshakeable digital
+              registry.
+            </p>
+            <div className="mt-10 h-px w-full max-w-md bg-[#E5E7EB]" aria-hidden />
+            <div className="mt-10 grid grid-cols-2 gap-x-8 gap-y-10 sm:gap-x-12">
               {stats.map(([v, l]) => (
                 <div key={l}>
-                  <p className="text-2xl font-bold text-brand-secondary">{v}</p>
-                  <p className="mt-1 text-xs font-semibold uppercase tracking-wider text-brand-muted">{l}</p>
+                  <p className="font-serif text-[clamp(1.75rem,2vw+1rem,2.25rem)] font-bold italic leading-none text-[#111827]">
+                    {v}
+                  </p>
+                  <p className="mt-2 font-sans text-xs font-semibold uppercase tracking-[0.14em] text-[#6B7280]">
+                    {l}
+                  </p>
                 </div>
               ))}
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-3 md:gap-4">
-            <div className="row-span-1 overflow-hidden rounded-3xl bg-slate-200">
-              <div className="flex aspect-[4/5] w-full items-center justify-center bg-slate-100 text-xs text-brand-muted">
-                Image
+
+          <div className="grid grid-cols-2 gap-4 md:gap-5">
+            <div className="overflow-hidden rounded-[28px] bg-slate-200 shadow-sm md:rounded-[32px]">
+              <img
+                src="https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=600&q=85"
+                alt="Pharmacist pouring tablets from a bottle"
+                className="aspect-[4/5] h-full w-full object-cover"
+                width={400}
+                height={500}
+                loading="lazy"
+              />
+            </div>
+            <div className="flex min-h-[240px] flex-col justify-between rounded-[28px] bg-[#0F172A] p-6 shadow-sm md:min-h-[280px] md:rounded-[32px] md:p-7">
+              <span className="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-sky-500/35 bg-transparent">
+                <Shield className="h-5 w-5 text-sky-300" strokeWidth={1.5} />
+              </span>
+              <div>
+                <p className="font-sans text-lg font-semibold leading-snug text-white">Verified Supply Chain</p>
+                <p className="mt-2 font-sans text-sm leading-relaxed text-slate-400">
+                  End-to-end tracking from manufacturer to consumer.
+                </p>
               </div>
             </div>
-            <div className="flex flex-col justify-between gap-3">
-              <div className="rounded-3xl bg-brand-secondary p-5 text-white">
-                <Shield className="h-8 w-8 text-sky-300" />
-                <p className="mt-3 font-semibold">Verified supply chain</p>
-                <p className="mt-1 text-sm text-slate-400">End-to-end traceability.</p>
-              </div>
-              <div className="rounded-3xl bg-sky-100 p-5 text-brand-secondary">
-                <Zap className="h-8 w-8 text-brand-primary" />
-                <p className="mt-3 font-semibold">Real-time monitoring</p>
-                <p className="mt-1 text-sm text-brand-muted">Alerts when risk changes.</p>
+            <div className="flex min-h-[240px] flex-col justify-between rounded-[28px] bg-[#F3F4F6] p-6 shadow-sm md:min-h-[280px] md:rounded-[32px] md:p-7">
+              <span className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-sky-100">
+                <Activity className="h-5 w-5 text-[#2563EB]" strokeWidth={1.5} />
+              </span>
+              <div>
+                <p className="font-sans text-lg font-semibold leading-snug text-[#111827]">Real-time Monitoring</p>
+                <p className="mt-2 font-sans text-sm leading-relaxed text-[#6B7280]">
+                  Continuous sync with national labs and regulatory bodies.
+                </p>
               </div>
             </div>
-            <div className="col-span-2 overflow-hidden rounded-3xl bg-slate-200">
-              <div className="flex aspect-[21/9] w-full items-center justify-center bg-slate-100 text-xs text-brand-muted md:aspect-auto md:min-h-[160px]">
-                Image
-              </div>
+            <div className="overflow-hidden rounded-[28px] bg-slate-200 shadow-sm md:rounded-[32px]">
+              <img
+                src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=600&q=85"
+                alt="Pharmacist reviewing medicine in a pharmacy"
+                className="aspect-[4/5] h-full w-full object-cover"
+                width={400}
+                height={500}
+                loading="lazy"
+              />
             </div>
           </div>
         </div>
