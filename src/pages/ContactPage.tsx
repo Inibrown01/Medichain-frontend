@@ -1,158 +1,280 @@
-import { Mail, MapPin, Phone, Clock, Send } from 'lucide-react'
+import {
+  Activity,
+  Building2,
+  ChevronRight,
+  Globe,
+  Headphones,
+  MapPin,
+  MessageSquare,
+  Send,
+  ShieldAlert,
+  Sparkles,
+} from 'lucide-react'
 import { Container } from '../components/layout/Container'
 import { ScrollReveal } from '../components/motion/ScrollReveal'
 import { Button } from '../components/ui/Button'
-import { Card } from '../components/ui/Card'
-import { Input } from '../components/ui/Input'
-import { TextArea } from '../components/ui/TextArea'
-import { useState } from 'react'
-import { AboutMission } from '../components/about/AboutMission'
-import { AboutCoreValues } from '../components/about/AboutCoreValues'
-import { AboutJoinCta } from '../components/about/AboutJoinCta'
 import { ContactPageHero } from '../components/contact/ContactPageHero'
-
-const cards = [
-  {
-    icon: Mail,
-    label: 'Email support',
-    value: 'support@pharmverifyng.gov.ng',
-    hint: 'We respond within one business day.',
-    ring: 'border-sky-100 bg-sky-50/80 text-[#2563EB]',
-  },
-  {
-    icon: Phone,
-    label: 'Phone',
-    value: '+234 817 2723 665',
-    hint: 'Mon–Fri, 8:00–18:00 WAT.',
-    ring: 'border-emerald-100 bg-emerald-50/80 text-emerald-700',
-  },
-  {
-    icon: MapPin,
-    label: 'Head office',
-    value: 'Abuja, Nigeria',
-    hint: 'National registry coordination.',
-    ring: 'border-violet-100 bg-violet-50/80 text-violet-700',
-  },
-  {
-    icon: Clock,
-    label: 'SLA',
-    value: 'Critical: 4h',
-    hint: 'Counterfeit reports prioritized.',
-    ring: 'border-amber-100 bg-amber-50/80 text-amber-800',
-  },
-] as const
+import { useState } from 'react'
+import { cn } from '../lib/cn'
 
 const departments = [
-  { id: 'general', label: 'General support' },
-  { id: 'counterfeit', label: 'Report counterfeit' },
-  { id: 'mfg', label: 'Manufacturer inquiry' },
-] as const
+  {
+    id: 'general' as const,
+    label: 'General Support',
+    Icon: MessageSquare,
+    badge: 'General inquiry',
+    formTitle: 'Send a Message.',
+  },
+  {
+    id: 'counterfeit' as const,
+    label: 'Report Counterfeit',
+    Icon: ShieldAlert,
+    badge: 'Counterfeit report',
+    formTitle: 'Report a suspicious product.',
+  },
+  {
+    id: 'mfg' as const,
+    label: 'Manufacturer Inquiry',
+    Icon: Building2,
+    badge: 'Manufacturer inquiry',
+    formTitle: 'Partner with the registry.',
+  },
+]
+
+type DeptId = (typeof departments)[number]['id']
+
+const fieldClass =
+  'h-12 w-full rounded-lg border border-transparent bg-[#F1F5F9] px-4 text-sm text-[#0F172A] placeholder:text-slate-400 outline-none transition-[box-shadow,border-color] focus:border-[#2563EB]/40 focus:ring-2 focus:ring-[#2563EB]/20'
+
+const labelClass = 'mb-2 block text-[11px] font-bold uppercase tracking-[0.1em] text-[#64748B]'
+
+const textareaClass =
+  'min-h-[160px] w-full resize-y rounded-lg border border-transparent bg-[#F1F5F9] px-4 py-3 text-sm text-[#0F172A] placeholder:text-slate-400 outline-none transition-[box-shadow,border-color] focus:border-[#2563EB]/40 focus:ring-2 focus:ring-[#2563EB]/20'
 
 export function ContactPage() {
-  const [dept, setDept] = useState<(typeof departments)[number]['id']>('general')
+  const [dept, setDept] = useState<DeptId>('general')
+  const active = departments.find((d) => d.id === dept)!
 
   return (
     <>
       <ContactPageHero />
-      <AboutMission />
-      <AboutCoreValues />
 
-      <section id="contact-form" className="scroll-mt-24 bg-white py-16 md:scroll-mt-28 md:py-24">
+      <section id="contact-form" className="scroll-mt-24 bg-[#F8F9FB] py-14 md:scroll-mt-28 md:py-20 lg:py-24">
         <Container>
-          <div className="mx-auto mb-12 max-w-2xl text-center">
-            <span className="inline-flex rounded-full border border-[#E2E8F0] bg-white px-3 py-1 font-sans text-xs font-bold uppercase tracking-[0.12em] text-[#0F172A]">
-              Get in touch
-            </span>
-            <h2 className="mt-4 font-sans text-3xl font-bold tracking-tight text-[#0F172A] md:text-4xl">
-              Direct line to{' '}
-              <span className="font-serif italic text-[#2563EB]">our analysts.</span>
-            </h2>
-            <p className="mt-4 text-base leading-relaxed text-[#64748B] md:text-lg">
-              Route your enquiry to the right desk. Encrypted transit for sensitive counterfeit intelligence.
-            </p>
-          </div>
+          <div className="grid gap-10 lg:grid-cols-12 lg:gap-14 xl:gap-16">
+            <ScrollReveal direction="up" className="lg:col-span-4">
+              <h2 className="font-sans text-2xl font-bold tracking-tight text-[#0F172A] md:text-[1.75rem]">
+                Select <span className="font-serif font-normal italic">Department.</span>
+              </h2>
+              <p className="mt-3 max-w-sm text-sm leading-relaxed text-[#64748B] md:text-[15px]">
+                Choose the relevant department to ensure your inquiry reaches the right experts.
+              </p>
 
-          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-            {cards.map(({ icon: Icon, ...c }, i) => (
-              <ScrollReveal key={c.label} delay={i * 0.08} direction="up" scale>
-                <Card padding="md" className="h-full border border-[#E5E7EB] bg-white shadow-sm">
-                  <span
-                    className={`inline-flex h-10 w-10 items-center justify-center rounded-xl border ${c.ring}`}
-                  >
-                    <Icon className="h-5 w-5" strokeWidth={1.75} />
-                  </span>
-                  <p className="mt-4 text-xs font-bold uppercase tracking-wide text-[#64748B]">{c.label}</p>
-                  <p className="mt-1 font-semibold text-[#111827]">{c.value}</p>
-                  <p className="mt-2 text-sm leading-relaxed text-[#64748B]">{c.hint}</p>
-                </Card>
-              </ScrollReveal>
-            ))}
-          </div>
-
-          <div className="mt-14 grid gap-10 lg:grid-cols-3 lg:gap-12">
-            <ScrollReveal direction="up" className="space-y-4">
-              <h3 className="font-sans text-xl font-bold text-[#0F172A] md:text-2xl">
-                Select <span className="font-serif italic text-[#2563EB]">department.</span>
-              </h3>
-              <div className="space-y-2">
-                {departments.map((d) => (
-                  <button
-                    key={d.id}
-                    type="button"
-                    onClick={() => setDept(d.id)}
-                    className={`flex w-full items-center justify-between rounded-xl border px-4 py-3.5 text-left text-sm font-semibold transition-colors ${
-                      dept === d.id
-                        ? 'border-[#0F172A] bg-[#0F172A] text-white shadow-md'
-                        : 'border-[#E2E8F0] bg-white text-[#0F172A] hover:bg-[#F8FAFC]'
-                    }`}
-                  >
-                    {d.label}
-                    <span aria-hidden className="text-lg opacity-80">
-                      →
-                    </span>
-                  </button>
-                ))}
+              <div className="mt-8 space-y-3">
+                {departments.map((d) => {
+                  const selected = dept === d.id
+                  return (
+                    <button
+                      key={d.id}
+                      type="button"
+                      aria-pressed={selected}
+                      onClick={() => setDept(d.id)}
+                      className={cn(
+                        'flex w-full items-center gap-3.5 rounded-[18px] border px-4 py-3.5 text-left transition-all',
+                        selected
+                          ? 'border-[#0F172A] bg-[#0F172A] text-white shadow-lg shadow-slate-900/15'
+                          : 'border-[#E2E8F0] bg-white text-[#64748B] shadow-sm hover:border-slate-300',
+                      )}
+                    >
+                      <span
+                        className={cn(
+                          'flex h-11 w-11 shrink-0 items-center justify-center rounded-xl',
+                          selected ? 'bg-[#2563EB] text-white' : 'bg-sky-50 text-slate-500',
+                        )}
+                      >
+                        <d.Icon className="h-5 w-5" strokeWidth={1.85} aria-hidden />
+                      </span>
+                      <span className={cn('min-w-0 flex-1 text-[15px] font-semibold', selected && 'text-white')}>
+                        {d.label}
+                      </span>
+                      <ChevronRight
+                        className={cn('h-5 w-5 shrink-0', selected ? 'text-white/90' : 'text-slate-300')}
+                        aria-hidden
+                      />
+                    </button>
+                  )
+                })}
               </div>
-              <Card className="border border-[#BFDBFE] bg-[#EFF6FF] p-5 shadow-sm">
-                <h4 className="font-semibold text-[#0F172A]">Need immediate help?</h4>
+
+              <div className="mt-10 rounded-[20px] border border-sky-200/80 bg-sky-50/90 p-6 shadow-sm">
+                <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-sky-200/60 bg-white text-[#2563EB]">
+                  <Headphones className="h-5 w-5" strokeWidth={1.75} aria-hidden />
+                </div>
+                <h3 className="mt-4 text-base font-bold text-[#0F172A]">Need Immediate Help?</h3>
                 <p className="mt-2 text-sm leading-relaxed text-[#64748B]">
-                  For urgent safety issues, use live chat to reach the duty officer.
+                  Our live chat agents are available Monday to Friday, 8am - 6pm WAT for real-time verification
+                  assistance.
                 </p>
-                <Button variant="outline" className="mt-4 w-full border-[#E2E8F0] bg-white" type="button">
-                  Launch live chat
+                <Button
+                  variant="outline"
+                  type="button"
+                  className="mt-5 h-11 w-full rounded-xl border-[#BFDBFE] bg-white text-sm font-semibold text-[#2563EB] hover:bg-sky-50/80"
+                >
+                  Launch Live Chat
                 </Button>
-              </Card>
+              </div>
             </ScrollReveal>
 
-            <ScrollReveal direction="up" delay={0.12} className="lg:col-span-2">
-              <Card padding="lg" className="h-full border border-[#E5E7EB] shadow-sm">
+            <ScrollReveal direction="up" delay={0.08} className="lg:col-span-8">
+              <div className="rounded-[24px] border border-[#E2E8F0] bg-white p-6 shadow-[0_24px_60px_-15px_rgba(15,23,42,0.12)] sm:p-8 md:p-10">
+                <span className="inline-flex rounded-full bg-[#EFF6FF] px-3 py-1 font-sans text-[11px] font-bold uppercase tracking-[0.12em] text-[#2563EB]">
+                  {active.badge}
+                </span>
+                <h3 className="mt-4 font-sans text-2xl font-bold tracking-tight text-[#0F172A] md:text-[1.75rem]">
+                  {active.formTitle}
+                </h3>
+
                 <form
-                  className="space-y-5"
+                  className="mt-8 space-y-5"
                   onSubmit={(e) => {
                     e.preventDefault()
                   }}
                 >
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    <Input name="name" label="Full name" placeholder="Amina Bello" />
-                    <Input name="email" type="email" label="Email address" placeholder="you@example.com" />
+                  <div className="grid gap-5 sm:grid-cols-2">
+                    <div>
+                      <label htmlFor="contact-name" className={labelClass}>
+                        Full name
+                      </label>
+                      <input
+                        id="contact-name"
+                        name="name"
+                        autoComplete="name"
+                        placeholder="Madeleine Nkiru"
+                        className={fieldClass}
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="contact-email" className={labelClass}>
+                        Email address
+                      </label>
+                      <input
+                        id="contact-email"
+                        name="email"
+                        type="email"
+                        autoComplete="email"
+                        placeholder="madeleinenkiru@gmail.com"
+                        className={fieldClass}
+                      />
+                    </div>
                   </div>
-                  <Input name="subject" label="Subject" placeholder="How can we help?" />
-                  <TextArea name="message" label="Detailed message" placeholder="Describe your request..." />
+                  <div>
+                    <label htmlFor="contact-subject" className={labelClass}>
+                      Subject
+                    </label>
+                    <input
+                      id="contact-subject"
+                      name="subject"
+                      placeholder="How can we help?"
+                      className={fieldClass}
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="contact-message" className={labelClass}>
+                      Detailed message
+                    </label>
+                    <textarea
+                      id="contact-message"
+                      name="message"
+                      rows={6}
+                      placeholder="Provide as much detail as possible..."
+                      className={textareaClass}
+                    />
+                  </div>
                   <Button
                     type="submit"
-                    className="w-full bg-[#2563EB] hover:bg-[#1d4edd] sm:w-auto"
-                    rightIcon={<Send className="h-4 w-4" />}
+                    size="lg"
+                    leftIcon={<Send className="h-[18px] w-[18px]" strokeWidth={2.25} aria-hidden />}
+                    className="mt-2 h-[52px] w-full rounded-xl bg-[#1D4ED8] text-[15px] font-bold hover:bg-[#1e40af] focus-visible:ring-[#2563EB]/40"
                   >
-                    Send message
+                    Send Message
                   </Button>
                 </form>
-              </Card>
+              </div>
             </ScrollReveal>
           </div>
         </Container>
       </section>
 
-      <AboutJoinCta />
+      <section className="bg-white py-14 md:py-20 lg:py-24">
+        <Container>
+          <ScrollReveal direction="up">
+            <div className="relative overflow-hidden rounded-[40px] md:rounded-[48px]">
+              <img
+                src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1920&q=85"
+                alt="National Health Registry headquarters building"
+                className="aspect-[21/9] min-h-[240px] w-full object-cover sm:min-h-[280px] md:aspect-[2.4/1] md:min-h-[320px]"
+                width={1920}
+                height={800}
+                loading="lazy"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-900/50 via-slate-900/10 to-transparent md:bg-gradient-to-r md:from-slate-900/35 md:via-transparent md:to-transparent" />
+
+              <div className="absolute bottom-4 left-4 right-4 max-w-md sm:bottom-6 sm:left-6 md:bottom-8 md:left-8 md:right-auto">
+                <div className="rounded-[22px] border border-slate-100/80 bg-white p-5 shadow-[0_20px_50px_-12px_rgba(15,23,42,0.2)] sm:p-6">
+                  <div className="flex items-center gap-3">
+                    <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-sky-100 text-[#2563EB]">
+                      <MapPin className="h-5 w-5" strokeWidth={1.85} aria-hidden />
+                    </span>
+                    <span className="text-lg font-bold text-[#0F172A]">Abuja HQ</span>
+                  </div>
+                  <p className="mt-3 text-sm leading-relaxed text-[#64748B] md:text-[15px]">
+                    Plot 452, National Health Registry Building, Central Business District, Abuja, Nigeria.
+                  </p>
+                  <a
+                    href="https://www.google.com/maps/search/?api=1&query=Plot+452+National+Health+Registry+Abuja+Nigeria"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-[#2563EB] transition-colors hover:text-[#1d4ed8]"
+                  >
+                    Get Directions
+                    <span aria-hidden>→</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </ScrollReveal>
+
+          <div className="mt-16 grid gap-10 md:mt-20 md:grid-cols-3 md:gap-8 lg:gap-12">
+            {[
+              {
+                icon: Globe,
+                title: 'International Liaison',
+                body: 'Coordinating with global health bodies for cross-border verification.',
+              },
+              {
+                icon: Sparkles,
+                title: 'Innovation Lab',
+                body: 'Developing next-gen digital security for pharmaceutical products.',
+              },
+              {
+                icon: Activity,
+                title: 'Real-time Monitoring',
+                body: '24/7 surveillance of national drug distribution networks.',
+              },
+            ].map(({ icon: Icon, title, body }, i) => (
+              <ScrollReveal key={title} direction="up" delay={i * 0.06}>
+                <div className="text-left">
+                  <span className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-sky-100 text-[#2563EB]">
+                    <Icon className="h-5 w-5" strokeWidth={1.85} aria-hidden />
+                  </span>
+                  <h4 className="mt-5 text-lg font-bold text-[#111827]">{title}</h4>
+                  <p className="mt-2 text-sm leading-relaxed text-[#6B7280] md:text-[15px]">{body}</p>
+                </div>
+              </ScrollReveal>
+            ))}
+          </div>
+        </Container>
+      </section>
     </>
   )
 }

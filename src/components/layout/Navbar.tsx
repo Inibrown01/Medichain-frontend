@@ -33,13 +33,15 @@ export function Navbar() {
   const { pathname } = useLocation()
   const [mobileOpen, setMobileOpen] = useState(false)
   const isHome = pathname === '/'
+  const isContact = pathname === '/contact'
+  const floatingNav = isHome || isContact
 
   return (
     <>
       <header
         className={cn(
           'z-[90] transition-[background,box-shadow,border-color] duration-300',
-          isHome
+          floatingNav
             ? 'pointer-events-none fixed left-0 right-0 top-0 flex justify-center px-3 pt-3 sm:pt-4'
             : 'sticky top-0 border-b border-slate-200/80 bg-white/95 backdrop-blur-md',
         )}
@@ -47,30 +49,30 @@ export function Navbar() {
         <div
           className={cn(
             'pointer-events-auto flex w-full items-center justify-between gap-3',
-            isHome
+            floatingNav
               ? 'max-w-5xl rounded-full border border-slate-200/90 bg-white/95 px-3 py-2 shadow-lg shadow-slate-900/10 sm:px-5'
               : 'mx-auto h-16 max-w-7xl px-4 sm:px-6 lg:px-8 md:h-[4.25rem]',
           )}
         >
-          <NavInner isHome={isHome} mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
+          <NavInner floatingNav={floatingNav} mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
         </div>
       </header>
 
       <MobileNavDrawer
         open={mobileOpen}
         onClose={() => setMobileOpen(false)}
-        floating={isHome}
+        floating={floatingNav}
       />
     </>
   )
 }
 
 function NavInner({
-  isHome,
+  floatingNav,
   mobileOpen,
   setMobileOpen,
 }: {
-  isHome: boolean
+  floatingNav: boolean
   mobileOpen: boolean
   setMobileOpen: (v: boolean) => void
 }) {
@@ -103,7 +105,7 @@ function NavInner({
         <HamburgerButton
           open={mobileOpen}
           onClick={() => setMobileOpen(!mobileOpen)}
-          className={cn(isHome && 'bg-white shadow-sm ring-1 ring-slate-200/80')}
+          className={cn(floatingNav && 'bg-white shadow-sm ring-1 ring-slate-200/80')}
         />
       </div>
     </>
